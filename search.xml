@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>wsl配置</title>
+      <link href="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/"/>
+      <url>/2024/05/30/wsl%E9%85%8D%E7%BD%AE/</url>
+      
+        <content type="html"><![CDATA[<h2 id="wsl相关配置"><a href="#wsl相关配置" class="headerlink" title="wsl相关配置"></a>wsl相关配置</h2><p>上次配置wsl已经很久了，想着还是记录一下，这次重新又配一次 ，由于遇到了 vscode的问题 ，说之前装的系统，vscode已经不支持了，所以这次打算新装一个系统 ubuntu20.08的，我之前装docker desktop的操作差不多，都是先导出，然后注销，重新安装。</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530183710479.png" alt="image-20240530183710479"></p><p>下面具体操作</p><h2 id="Ubuntu的下载"><a href="#Ubuntu的下载" class="headerlink" title="Ubuntu的下载"></a>Ubuntu的下载</h2><p>首先从mircosoftware 下载Ubuntu 系统，结果第一步就卡住了，商店一直刷新不出来，试了一堆办法 ，最后发现把梯子关了，然后登录下微软账号就可以了。</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530183856701.png" alt="image-20240530183856701"></p><p>接下来打开ubuntu 设置相关配置  </p><p>第一次打开有username  和 password的配置 </p><p>这里忘记截图了 ， 很简单，接下来 注销一下之前的centOS</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530184518987.png" alt="image-20240530184518987"></p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530184616709.png" alt="image-20240530184616709"></p><p>导出ubuntu</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530185149904.png" alt="image-20240530185149904"></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --export Ubuntu-20.04 E:\zaqizaba\tool\Ubuntu-20.04.tar</span><br></pre></td></tr></table></figure><p>导出 然后注销</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530185636378.png" alt="image-20240530185636378"></p><p>在导入</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --import Ubuntu-20.04 E:\zaqizaba\tool\Ubuntu-20.04 E:\zaqizaba\tool\Ubuntu-20.04.tar</span><br></pre></td></tr></table></figure><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530185734893.png" alt="image-20240530185734893"></p><p>然后删除制定的文件就行</p><p>更新一下 ubuntu </p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530190317715.png" alt="image-20240530190317715"></p><p>之后 vscode 在插件中下载wsl  就行 </p><p>进入 ubuntu 愉快的开始学习。</p><p><img src="/2024/05/30/wsl%E9%85%8D%E7%BD%AE/image-20240530191435388.png" alt="image-20240530191435388"></p><hr><p>至此全部结束~</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 随笔 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>题解-树网的核</title>
       <link href="/2024/04/26/%E9%A2%98%E8%A7%A3-%E6%A0%91%E7%BD%91%E7%9A%84%E6%A0%B8/"/>
       <url>/2024/04/26/%E9%A2%98%E8%A7%A3-%E6%A0%91%E7%BD%91%E7%9A%84%E6%A0%B8/</url>
