@@ -1,0 +1,494 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>mit6.s081 一些函数的解析 备查 | Missay的博客</title><meta name="author" content="missay"><meta name="copyright" content="missay"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="本文主要是对xv6中一些常用函数的解释，备查，毕竟有很多函数你不去读源码你是看不懂的。当然也要结合手册和授课内容。 参考的相关链接  []: http:&#x2F;&#x2F;xv6.dgs.zone&#x2F;tranlate_books&#x2F;book-riscv-rev1&#x2F;c2&#x2F;s1.html    “xv6教材中文”[]: https:&#x2F;&#x2F;mit-public-courses-cn-translatio.gitbook.i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mit6.s081 一些函数的解析 备查">
+<meta property="og:url" content="https://missay.fun/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/index.html">
+<meta property="og:site_name" content="Missay的博客">
+<meta property="og:description" content="本文主要是对xv6中一些常用函数的解释，备查，毕竟有很多函数你不去读源码你是看不懂的。当然也要结合手册和授课内容。 参考的相关链接  []: http:&#x2F;&#x2F;xv6.dgs.zone&#x2F;tranlate_books&#x2F;book-riscv-rev1&#x2F;c2&#x2F;s1.html    “xv6教材中文”[]: https:&#x2F;&#x2F;mit-public-courses-cn-translatio.gitbook.i">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load">
+<meta property="article:published_time" content="2024-09-10T07:42:26.000Z">
+<meta property="article:modified_time" content="2024-09-12T12:48:13.647Z">
+<meta property="article:author" content="missay">
+<meta property="article:tag" content="os">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"><link rel="shortcut icon" href="/img/21.jpg"><link rel="canonical" href="https://missay.fun/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"Traditional Chinese Activated Manually","cht_to_chs":"Simplified Chinese Activated Manually","day_to_night":"Dark Mode Activated Manually","night_to_day":"Light Mode Activated Manually","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'mit6.s081 一些函数的解析 备查',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-12 20:48:13'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/missay.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load')"><nav id="nav"><span id="blog-info"><a href="/" title="Missay的博客"><span class="site-name">Missay的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">mit6.s081 一些函数的解析 备查</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-09-10T07:42:26.000Z" title="Created 2024-09-10 15:42:26">2024-09-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-09-12T12:48:13.647Z" title="Updated 2024-09-12 20:48:13">2024-09-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">3.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>12min</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="mit6.s081 一些函数的解析 备查"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>本文主要是对xv6中一些常用函数的解释，备查，毕竟有很多函数你不去读源码你是看不懂的。当然也要结合手册和授课内容。</p>
+<p>参考的相关链接 </p>
+<p>[]: <a target="_blank" rel="noopener" href="http://xv6.dgs.zone/tranlate_books/book-riscv-rev1/c2/s1.html">http://xv6.dgs.zone/tranlate_books/book-riscv-rev1/c2/s1.html</a>    “xv6教材中文”<br>[]: <a target="_blank" rel="noopener" href="https://mit-public-courses-cn-translatio.gitbook.io/mit6-s081">https://mit-public-courses-cn-translatio.gitbook.io/mit6-s081</a>    “授课内容”</p>
+</blockquote>
+<h3 id="关于页表相关操作函数"><a href="#关于页表相关操作函数" class="headerlink" title="关于页表相关操作函数"></a>关于页表相关操作函数</h3><p>其实大多跟虚拟内存的函数都定义在了vm.c中 感兴趣的可以看一下，这里介绍一些常用的。</p>
+<h4 id="walk函数"><a href="#walk函数" class="headerlink" title="walk函数"></a>walk函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">walk</span>(<span class="type">pagetable_t</span> pagetable, uint64 va, <span class="type">int</span> alloc)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span>(va &gt;= MAXVA)</span><br><span class="line">    <span class="built_in">panic</span>(<span class="string">&quot;walk&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> level = <span class="number">2</span>; level &gt; <span class="number">0</span>; level--) &#123;</span><br><span class="line">    <span class="type">pte_t</span> *pte = &amp;pagetable[<span class="built_in">PX</span>(level, va)];</span><br><span class="line">    <span class="keyword">if</span>(*pte &amp; PTE_V) &#123;</span><br><span class="line">      pagetable = (<span class="type">pagetable_t</span>)<span class="built_in">PTE2PA</span>(*pte);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(!alloc || (pagetable = (<span class="type">pde_t</span>*)<span class="built_in">kalloc</span>()) == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">      <span class="built_in">memset</span>(pagetable, <span class="number">0</span>, PGSIZE);</span><br><span class="line">      *pte = <span class="built_in">PA2PTE</span>(pagetable) | PTE_V;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> &amp;pagetable[<span class="built_in">PX</span>(<span class="number">0</span>, va)];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240911141949939.png" alt="image-20240911141949939"></p>
+<p>从教材中我们可以看到这个是三级页表。</p>
+<p>它的主要作用是查找虚拟地址 <code>va</code> 对应的页表项（PTE）</p>
+<p>参数说明：pagetable 页表的起始地址</p>
+<p>va 需要查找的虚拟地址。</p>
+<p>alloc  分配的标志位 如果walk函数没有找到，且为1 那么会给他分配一个新的页表</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240911144429835.png" alt="image-20240911144429835"></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">va &gt;= MAXVA</span><br></pre></td></tr></table></figure>
+
+<h5 id="MAXVA-？"><a href="#MAXVA-？" class="headerlink" title="MAXVA ？"></a>MAXVA ？</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define MAXVA (1L &lt;&lt; (9 + 9 + 9 + 12 - 1))</span><br></pre></td></tr></table></figure>
+
+<p>查阅资料得知：</p>
+<p>在 RISC-V 架构中，虚拟地址由三级页表管理，每级页表有 9 位索引，加上页内偏移的 12 位，总共 39 位地址空间。具体计算如下：</p>
+<p>每级页表有 9 位索引：9+9+9=27</p>
+<p>页内偏移有 12 位：27+12=39</p>
+<p>然而，虚拟地址空间的最高位是符号位，用于表示正负地址。因此，实际可用的地址位数是 38 位，而不是 39 位。</p>
+<h5 id="PX"><a href="#PX" class="headerlink" title="PX"></a>PX</h5><p>我们看一下定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PX(level, va) ((((uint64) (va)) &gt;&gt; (PGSHIFT + (level) * 9)) &amp; 0x1FF)</span></span><br></pre></td></tr></table></figure>
+
+<p>PX 的作用是从虚拟地址va中提取特定级别的页表索引</p>
+<p>其中PGSHIFT是12 。个人理解是这样的</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240911150151223.png" alt="image-20240911150151223"></p>
+<p>从图中我们可以看出offset是12 也同时对应了一个页的大小是12 做偏移用。一个leave 对应 9  所以看你是几级 level  然后*9   右移之后 对0x1ff 取与 操作 ，就是去出对应级数的索引。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240911150822005.png" alt="image-20240911150822005"></p>
+<p>去出对应的索引后 我们得到他的地址 对应是哪一个PTE。因为2的次方是512 ，对应512个PTE .</p>
+<p>找到对应的PTE后 我们对标志位取 与操作，判断这个pte是否有效。 如果有效 ，则通过PTE2PA函数实现相关操作。</p>
+<h5 id="PTE2PA"><a href="#PTE2PA" class="headerlink" title="PTE2PA"></a>PTE2PA</h5><p>PTE2PA 是一个宏，用于从页表项（PTE）中提取物理地址。页表项不仅包含物理地址，还包含一些标志位（如有效位、权限位等）。PTE2PA 宏的作用是从页表项中提取出物理地址部分。以下是 PTE2PA 的定义：</p>
+<p>有效代表到了叶子节点，这个时候我们就可以从虚拟地址映射到物理地址了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define PTE2PA(pte) (((pte) &gt;&gt; 10) &lt;&lt; 12)</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到 先往右位移10位，然后左移12位。</p>
+<p>就是舍去低的10位flag  然后左移12位。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240911151945808.png" alt="image-20240911151945808"></p>
+<p>关于位移12位？看了下上课的内容。</p>
+<blockquote>
+<p>Frans教授：我们不会加上虚拟地址中的offset，这里只是使用了12bit的0。所以我们用44bit的PPN，再加上12bit的0，这样就得到了下一级page directory的56bit物理地址。这里要求每个page directory都与物理page对齐（也就是page directory的起始地址就是某个page的起始地址，所以低12bit都为0）。</p>
+</blockquote>
+<p>貌似是这样解释的。</p>
+<h4 id="walkaddr"><a href="#walkaddr" class="headerlink" title="walkaddr"></a>walkaddr</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">uint64</span><br><span class="line"><span class="title function_">walkaddr</span><span class="params">(<span class="type">pagetable_t</span> pagetable, uint64 va)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">pte_t</span> *pte;</span><br><span class="line">  uint64 pa;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(va &gt;= MAXVA)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  pte = walk(pagetable, va, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span>(pte == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span>((*pte &amp; PTE_V) == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span>((*pte &amp; PTE_U) == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  pa = PTE2PA(*pte);</span><br><span class="line">  <span class="keyword">return</span> pa;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们观看源码可以得知 walk 函数的调用。</p>
+<h5 id="walkaddr的作用"><a href="#walkaddr的作用" class="headerlink" title="walkaddr的作用"></a>walkaddr的作用</h5><p><code>walkaddr</code> 函数用于将虚拟地址转换为物理地址。</p>
+<p> 主要就是通过walk函数的调用得到 一个pte 然后 进行相对应的判断。</p>
+<p>1.检查虚拟地址是否有效：如果虚拟地址超出最大值 MAXVA，则返回 0。</p>
+<p>2.查找页表项：使用 walk 函数查找页表项。如果页表项不存在或无效，则返回 0。</p>
+<p>3.检查页表项的有效性：如果页表项无效（即没有设置 PTE_V 位）或不可用户访问（即没有设置 PTE_U 位），则返回 0。</p>
+<p>4.返回物理地址：如果页表项有效且用户可访问，则返回对应的物理地址。</p>
+<h4 id="kvmmap"><a href="#kvmmap" class="headerlink" title="kvmmap"></a>kvmmap</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">kvmmap</span><span class="params">(uint64 va, uint64 pa, uint64 sz, <span class="type">int</span> perm)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span>(mappages(kernel_pagetable, va, sz, pa, perm) != <span class="number">0</span>)</span><br><span class="line">    panic(<span class="string">&quot;kvmmap&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过查看kvmmap 函数的实现，我们可以知道 ，他主要调用mappages函数，他将物理地址映射到虚拟地址 ，我们再看看mappages 函数即可。</p>
+<h4 id="mappages"><a href="#mappages" class="headerlink" title="mappages"></a>mappages</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">mappages</span><span class="params">(<span class="type">pagetable_t</span> pagetable, uint64 va, uint64 size, uint64 pa, <span class="type">int</span> perm)</span></span><br><span class="line">&#123;</span><br><span class="line">  uint64 a, last;</span><br><span class="line">  <span class="type">pte_t</span> *pte;</span><br><span class="line"></span><br><span class="line">  a = PGROUNDDOWN(va);</span><br><span class="line">  last = PGROUNDDOWN(va + size - <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">for</span>(;;)&#123;</span><br><span class="line">    <span class="keyword">if</span>((pte = walk(pagetable, a, <span class="number">1</span>)) == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span>(*pte &amp; PTE_V)</span><br><span class="line">      panic(<span class="string">&quot;remap&quot;</span>);</span><br><span class="line">    *pte = PA2PTE(pa) | perm | PTE_V;</span><br><span class="line">    <span class="keyword">if</span>(a == last)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    a += PGSIZE;</span><br><span class="line">    pa += PGSIZE;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们首先看看他的形参</p>
+<p>函数参数</p>
+<ul>
+<li><code>pagetable</code> (pagetable_t): 页表指针。</li>
+<li><code>va</code> (uint64): 起始虚拟地址。</li>
+<li><code>size</code> (uint64): 映射的大小（以字节为单位）。</li>
+<li><code>pa</code> (uint64): 起始物理地址。</li>
+<li><code>perm</code> (int): 权限标志，定义了映射页面的访问权限（例如读、写、执行权限</li>
+</ul>
+<p>首先a被初始化向下取整到页面的边界值</p>
+<p>last 被初始化va+size-1 向下取整到页面边界值。</p>
+<p>使用walk函数 查找对应页表项，如果不存在 则创建页表项。如果walk返回0 表示创建失败，函数返回-1。</p>
+<p>之后：判断是否有效 如果已经有效 则 panic。</p>
+<p>否则继续执行下去  将物理地址对应的页表项 设置相应的权限，并给V赋值。</p>
+<p>判断a == last  是因为 如果你从某地址开始映射的地方，它对应的对齐内存，跟你要映射的大小所对应的边界如果是一样，那么就映射完了。</p>
+<p>否则加一个PGSIZE 大小的页面。然后继续循环。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/image-20240912192812695.png" alt="image-20240912192812695"></p>
+<h4 id="kvmpa"><a href="#kvmpa" class="headerlink" title="kvmpa"></a>kvmpa</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">uint64</span><br><span class="line"><span class="title function_">kvmpa</span><span class="params">(uint64 va)</span></span><br><span class="line">&#123;</span><br><span class="line">  uint64 off = va % PGSIZE;</span><br><span class="line">  <span class="type">pte_t</span> *pte;</span><br><span class="line">  uint64 pa;</span><br><span class="line">  </span><br><span class="line">  pte = walk(kernel_pagetable, va, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span>(pte == <span class="number">0</span>)</span><br><span class="line">    panic(<span class="string">&quot;kvmpa&quot;</span>);</span><br><span class="line">  <span class="keyword">if</span>((*pte &amp; PTE_V) == <span class="number">0</span>)</span><br><span class="line">    panic(<span class="string">&quot;kvmpa&quot;</span>);</span><br><span class="line">  pa = PTE2PA(*pte);</span><br><span class="line">  <span class="keyword">return</span> pa+off;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>kvmpa</code> 函数在 xv6 操作系统中用于将内核虚拟地址转换为物理地址。</p>
+<p>off 是计算 虚拟地址的偏移量。</p>
+<p>然后用walk函数，找va对应的页表项。</p>
+<p>如果不存在 则panic “kvmpa”</p>
+<p>如果页表项无效 也调用panic。</p>
+<p>之后利用PTE2PA 提取ppn  </p>
+<p>之后pa + off 最终的物理地址。</p>
+<h4 id="uvmunmap"><a href="#uvmunmap" class="headerlink" title="uvmunmap"></a>uvmunmap</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">uvmunmap</span><span class="params">(<span class="type">pagetable_t</span> pagetable, uint64 va, uint64 npages, <span class="type">int</span> do_free)</span></span><br><span class="line">&#123;</span><br><span class="line">  uint64 a;</span><br><span class="line">  <span class="type">pte_t</span> *pte;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>((va % PGSIZE) != <span class="number">0</span>)</span><br><span class="line">    panic(<span class="string">&quot;uvmunmap: not aligned&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(a = va; a &lt; va + npages*PGSIZE; a += PGSIZE)&#123;</span><br><span class="line">    <span class="keyword">if</span>((pte = walk(pagetable, a, <span class="number">0</span>)) == <span class="number">0</span>)</span><br><span class="line">      panic(<span class="string">&quot;uvmunmap: walk&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>((*pte &amp; PTE_V) == <span class="number">0</span>)</span><br><span class="line">      panic(<span class="string">&quot;uvmunmap: not mapped&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(PTE_FLAGS(*pte) == PTE_V)</span><br><span class="line">      panic(<span class="string">&quot;uvmunmap: not a leaf&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(do_free)&#123;</span><br><span class="line">      uint64 pa = PTE2PA(*pte);</span><br><span class="line">      kfree((<span class="type">void</span>*)pa);</span><br><span class="line">    &#125;</span><br><span class="line">    *pte = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>uvmunmap</code> 函数用于取消映射一段虚拟地址空间，并可选择性地释放对应的物理内存。这在进程终止或释放内存时非常重要，以确保内存资源的正确管理和回收。</p>
+<p>下面来解释这段流程。</p>
+<p>函数参数</p>
+<ul>
+<li><code>pagetable</code> (pagetable_t): 页表指针。</li>
+<li><code>va</code> (uint64): 起始虚拟地址。</li>
+<li><code>npages</code> (uint64): 要取消映射的页面数量。</li>
+<li><code>do_free</code> (int): 是否释放物理内存的标志。如果为非零值，则释放物理内存。</li>
+</ul>
+<p>首先判断 va % PGSIZE 是否是对齐的。</p>
+<p>不是则 panic </p>
+<p>然后开始 for循环  每次一个页面。</p>
+<p>a = va  a &lt; va + npages*PGSIZE a += PGSIZE</p>
+<p>进入第一个 if  找第一个pte  如果 为 0 表示页表项不存在。那么 就panic</p>
+<p>第二个if 就是 判断pte_V 标志位 如果 无效 则panic</p>
+<p>第三个if 我们注意到 有一个 PTE_FLAGS</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> PTE_FLAGS(pte) ((pte) &amp; 0x3FF)</span></span><br></pre></td></tr></table></figure>
+
+<p>定义如上。</p>
+<p>因为0x3ff 是  11 1111 1111 刚好10 位 对应pte 的10个符号位。 将pte 只保留低位的10位 如果 刚好 等于PTE_V 那么表示他不是叶子结点。触发panic </p>
+<p>第四个if 判断是否要进行 释放对应的内存操作</p>
+<p>如果等于1  表示确定。 PTE2PA 将pte 转换到对应的物理地址。 然后通过kfree 释放。</p>
+<h5 id="kfree"><a href="#kfree" class="headerlink" title="kfree"></a>kfree</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">kfree</span><span class="params">(<span class="type">void</span> *pa)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">run</span> *<span class="title">r</span>;</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(((uint64)pa % PGSIZE) != <span class="number">0</span> || (<span class="type">char</span>*)pa &lt; end || (uint64)pa &gt;= PHYSTOP)</span><br><span class="line">    panic(<span class="string">&quot;kfree&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Fill with junk to catch dangling refs.</span></span><br><span class="line">   acquire(&amp;ref.lock);</span><br><span class="line">   <span class="keyword">if</span>(--ref.refcount[(uint64)pa / PGSIZE] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    release(&amp;ref.lock);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  release(&amp;ref.lock);</span><br><span class="line">  <span class="built_in">memset</span>(pa, <span class="number">1</span>, PGSIZE);</span><br><span class="line"></span><br><span class="line">  r = (<span class="keyword">struct</span> run*)pa;</span><br><span class="line"></span><br><span class="line">  acquire(&amp;kmem.lock);</span><br><span class="line">  r-&gt;next = kmem.freelist;</span><br><span class="line">  kmem.freelist = r;</span><br><span class="line">  release(&amp;kmem.lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if(((uint64)pa % PGSIZE) != 0 || (char*)pa &lt; end || (uint64)pa &gt;= PHYSTOP)</span><br><span class="line">   panic(&quot;kfree&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>这一段主要判断 地址是否合法。</p>
+<p>之后 acquire 加锁。</p>
+<p>然后进行减少引用 –ref.ref.count 如果大于0 表示这个页面还在被使用。</p>
+<p>再release 释放锁。</p>
+<p>填充垃圾数据：<br>memset(pa, 1, PGSIZE);<br>将页面填充为 1，以捕捉悬空引用（dangling references）。</p>
+<p>将页面添加到空闲列表：<br>r = (struct run*)pa;<br>将页面地址转换为 struct run 类型。<br>acquire(&amp;kmem.lock);<br>获取内存管理锁。<br>r-&gt;next = kmem.freelist;<br>将页面添加到空闲列表的头部。<br>kmem.freelist = r;<br>更新空闲列表头指针。<br>release(&amp;kmem.lock);<br>释放内存管理锁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">char</span> end[]; <span class="comment">// first address after kernel.</span></span><br><span class="line">                   <span class="comment">// defined by kernel.ld.</span></span><br></pre></td></tr></table></figure>
+
+<p><code>extern char end[];</code> 是一个外部变量声明，用于指示内核代码和数据段的结束地址。这个变量在 <code>kernel.ld</code> 链接脚本中定义。</p>
+<p>主要用途</p>
+<ol>
+<li><strong>内存管理初始化</strong>：<ul>
+<li>在内核启动时，<code>end</code> 用于确定内核占用的内存范围，从而知道从哪里开始分配空闲内存。例如，在 <code>kinit</code> 函数中，<code>freerange</code> 函数使用 <code>end</code> 作为起始地址来初始化空闲内存列表。</li>
+</ul>
+</li>
+<li><strong>内存分配</strong>：<ul>
+<li><code>end</code> 变量帮助内核知道哪些内存区域是可用的，哪些是已经被内核代码和数据占用的。这对于内存分配器（如 <code>kalloc</code> 和 <code>kfree</code>）非常重要。</li>
+</ul>
+</li>
+</ol>
+<p>在 kernel.ld 链接脚本中，end 通常定义为内核代码和数据段的结束地址。</p>
+<h4 id="kalloc"><a href="#kalloc" class="headerlink" title="kalloc"></a>kalloc</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *</span><br><span class="line"><span class="title function_">kalloc</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">run</span> *<span class="title">r</span>;</span></span><br><span class="line"></span><br><span class="line">  acquire(&amp;kmem.lock);</span><br><span class="line">  r = kmem.freelist;</span><br><span class="line">  <span class="keyword">if</span>(r)&#123;</span><br><span class="line">    kmem.freelist = r-&gt;next;</span><br><span class="line">    acquire(&amp;ref.lock);</span><br><span class="line">    ref.refcount[(uint64)r / PGSIZE] =<span class="number">1</span>;</span><br><span class="line">    release(&amp;ref.lock);</span><br><span class="line">  &#125;</span><br><span class="line">  release(&amp;kmem.lock);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(r)</span><br><span class="line">    <span class="built_in">memset</span>((<span class="type">char</span>*)r, <span class="number">5</span>, PGSIZE); <span class="comment">// fill with junk</span></span><br><span class="line">  <span class="keyword">return</span> (<span class="type">void</span>*)r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大致逻辑跟kfree是一样的 都是 acquire 然后release 。</p>
+<h4 id="copyin"><a href="#copyin" class="headerlink" title="copyin"></a>copyin</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span></span><br><span class="line"><span class="title function_">copyin</span><span class="params">(<span class="type">pagetable_t</span> pagetable, <span class="type">char</span> *dst, uint64 srcva, uint64 len)</span></span><br><span class="line">&#123;</span><br><span class="line">  uint64 n, va0, pa0;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>(len &gt; <span class="number">0</span>)&#123;</span><br><span class="line">    va0 = PGROUNDDOWN(srcva);</span><br><span class="line">    pa0 = walkaddr(pagetable, va0);</span><br><span class="line">    <span class="keyword">if</span>(pa0 == <span class="number">0</span>)</span><br><span class="line">      <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    n = PGSIZE - (srcva - va0);</span><br><span class="line">    <span class="keyword">if</span>(n &gt; len)</span><br><span class="line">      n = len;</span><br><span class="line">    memmove(dst, (<span class="type">void</span> *)(pa0 + (srcva - va0)), n);</span><br><span class="line"></span><br><span class="line">    len -= n;</span><br><span class="line">    dst += n;</span><br><span class="line">    srcva = va0 + PGSIZE;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>copyin 是将数据从用户空间复制到内核空间。</p>
+<p>函数参数</p>
+<ul>
+<li><code>pagetable</code> (pagetable_t): 页表指针，用于转换虚拟地址到物理地址。</li>
+<li><code>dst</code> (char*): 目标地址，内核空间中的缓冲区。</li>
+<li><code>srcva</code> (uint64): 源地址，用户空间中的虚拟地址。</li>
+<li><code>len</code> (uint64): 要复制的数据长度。</li>
+</ul>
+<h5 id="主要步骤"><a href="#主要步骤" class="headerlink" title="主要步骤"></a>主要步骤</h5><ol>
+<li><strong>计算页面对齐地址</strong>：<ul>
+<li><code>va0 = PGROUNDDOWN(srcva);</code></li>
+<li>将源虚拟地址 <code>srcva</code> 向下取整到页面边界。</li>
+</ul>
+</li>
+<li><strong>转换虚拟地址到物理地址</strong>：<ul>
+<li><code>pa0 = walkaddr(pagetable, va0);</code></li>
+<li>使用 <code>walkaddr</code> 函数将虚拟地址 <code>va0</code> 转换为物理地址 <code>pa0</code>。</li>
+<li>如果转换失败（<code>pa0 == 0</code>），返回 -1。</li>
+</ul>
+</li>
+<li><strong>计算要复制的字节数</strong>：<ul>
+<li><code>n = PGSIZE - (srcva - va0);</code></li>
+<li>计算当前页面内剩余的字节数。</li>
+<li><code>if(n &gt; len) n = len;</code></li>
+<li>如果剩余字节数大于要复制的长度，则只复制需要的长度。</li>
+</ul>
+</li>
+<li><strong>执行内存复制</strong>：<ul>
+<li><code>memmove(dst, (void *)(pa0 + (srcva - va0)), n);</code></li>
+<li>将数据从物理地址 <code>pa0 + (srcva - va0)</code> 复制到目标地址 <code>dst</code>。</li>
+</ul>
+</li>
+<li><strong>更新指针和长度</strong>：<ul>
+<li><code>len -= n;</code></li>
+<li>减少剩余要复制的长度。</li>
+<li><code>dst += n;</code></li>
+<li>更新目标地址指针。</li>
+<li><code>srcva = va0 + PGSIZE;</code></li>
+<li>更新源虚拟地址到下一个页面。</li>
+</ul>
+</li>
+<li><strong>循环直到复制完成</strong>：<ul>
+<li>重复上述步骤，直到所有数据都被复制。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>题外话： 向下取整和向上取整<br>在操作系统和内存管理中，向下取整和向上取整是常见的操作，主要用于对齐地址。以下是它们的区别和使用场景：</p>
+<p>向下取整（Round Down）：<br>将地址向下取整到最近的页面边界。</p>
+<p>使用场景：通常用于计算页面的起始地址。例如，在 copyin 函数中，PGROUNDDOWN(srcva) 将虚拟地址 srcva 向下取整到页面边界，以确保从页面的起始位置开始操作。</p>
+<p>示例：PGROUNDDOWN(0x1234) 结果是 0x1000。</p>
+<p>向上取整（Round Up）：<br>将地址向上取整到最近的页面边界。<br>使用场景：通常用于分配内存时，确保分配的内存大小是页面大小的整数倍。例如，在分配内存时，如果需要分配 3000 字节，向上取整到页面大小（通常是 4096 字节）以确保分配足够的空间。<br>示例：PGROUNDUP(0x1234) 结果是 0x2000。</p>
+<p>栈的生长方向<br>在大多数计算机系统中，栈是从高地址向低地址生长的。这意味着栈顶的地址会随着数据的压入而减小。</p>
+<p>低地址：内存地址较小的部分。<br>高地址：内存地址较大的部分。<br>内存布局示意<br>高地址<br>+——————+<br>|                  |<br>|      栈        |</p>
+<table>
+<thead>
+<tr>
+<th>|                |</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>|   堆       |</td>
+</tr>
+<tr>
+<td>|                 |</td>
+</tr>
+<tr>
+<td>——————</td>
+</tr>
+<tr>
+<td>| 数据段      |</td>
+</tr>
+<tr>
+<td>——————</td>
+</tr>
+<tr>
+<td>| 代码段      |</td>
+</tr>
+<tr>
+<td>——————</td>
+</tr>
+<tr>
+<td>低地址</td>
+</tr>
+</tbody></table>
+<p>在这个布局中，栈从高地址向低地址生长，而堆从低地址向高地址生长。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://missay.fun">missay</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://missay.fun/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/">https://missay.fun/2024/09/10/mit6-s081-一些函数的解析-备查/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/os/">os</a></div><div class="post_share"><div class="social-share" data-image="https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/18/%E6%89%93%E5%8D%A1%E7%A8%8B%E5%BA%8F/" title="打卡程序"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/28244078/pexels-photo-28244078.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">打卡程序</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/06/mit6-s081-lab5-%E8%A1%A5%E6%A1%A3/" title="mit6.s081 lab5 补档"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/28173130/pexels-photo-28173130.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">mit6.s081 lab5 补档</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2024/09/06/mit6-s081-lab5-%E8%A1%A5%E6%A1%A3/" title="mit6.s081 lab5 补档"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/28173130/pexels-photo-28173130.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-06</div><div class="title">mit6.s081 lab5 补档</div></div></a></div><div><a href="/2024/09/03/%E5%88%A9%E7%94%A8vscode-%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E9%98%BF%E9%87%8C%E4%BA%91-ecs%E6%9C%8D%E5%8A%A1%E5%99%A8-%E7%94%A8gdb-%E8%B0%83%E8%AF%95/" title="利用vscode 远程连接阿里云 ecs服务器 用gdb 调试"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/15282063/pexels-photo-15282063.jpeg?auto=compress&cs=tinysrgb&w=600" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-03</div><div class="title">利用vscode 远程连接阿里云 ecs服务器 用gdb 调试</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/missay.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">missay</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">22</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/missay-nine"><i class="fab fa-github"></i><span>你真正需要的是？</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/missay-nine" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:suxizhn1@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog <br> csdn :<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_59561323"> my csdn</a> <br> leetcode :<a target="_blank" rel="noopener" href="https://leetcode.cn/u/amazing-corizz0/"> my leetcode </a><br> yuque :<a target="_blank" rel="noopener" href="https://www.yuque.com/missayqingjiu"> yuque</a> <br></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E9%A1%B5%E8%A1%A8%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">关于页表相关操作函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#walk%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">walk函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MAXVA-%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">MAXVA ？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#PX"><span class="toc-number">1.1.2.</span> <span class="toc-text">PX</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#PTE2PA"><span class="toc-number">1.1.3.</span> <span class="toc-text">PTE2PA</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#walkaddr"><span class="toc-number">1.2.</span> <span class="toc-text">walkaddr</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#walkaddr%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">walkaddr的作用</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kvmmap"><span class="toc-number">1.3.</span> <span class="toc-text">kvmmap</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mappages"><span class="toc-number">1.4.</span> <span class="toc-text">mappages</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kvmpa"><span class="toc-number">1.5.</span> <span class="toc-text">kvmpa</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uvmunmap"><span class="toc-number">1.6.</span> <span class="toc-text">uvmunmap</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#kfree"><span class="toc-number">1.6.1.</span> <span class="toc-text">kfree</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kalloc"><span class="toc-number">1.7.</span> <span class="toc-text">kalloc</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#copyin"><span class="toc-number">1.8.</span> <span class="toc-text">copyin</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.8.1.</span> <span class="toc-text">主要步骤</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/09/18/%E6%89%93%E5%8D%A1%E7%A8%8B%E5%BA%8F/" title="打卡程序"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/28244078/pexels-photo-28244078.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="打卡程序"/></a><div class="content"><a class="title" href="/2024/09/18/%E6%89%93%E5%8D%A1%E7%A8%8B%E5%BA%8F/" title="打卡程序">打卡程序</a><time datetime="2024-09-18T15:40:42.000Z" title="Created 2024-09-18 23:40:42">2024-09-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/" title="mit6.s081 一些函数的解析 备查"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="mit6.s081 一些函数的解析 备查"/></a><div class="content"><a class="title" href="/2024/09/10/mit6-s081-%E4%B8%80%E4%BA%9B%E5%87%BD%E6%95%B0%E7%9A%84%E8%A7%A3%E6%9E%90-%E5%A4%87%E6%9F%A5/" title="mit6.s081 一些函数的解析 备查">mit6.s081 一些函数的解析 备查</a><time datetime="2024-09-10T07:42:26.000Z" title="Created 2024-09-10 15:42:26">2024-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/06/mit6-s081-lab5-%E8%A1%A5%E6%A1%A3/" title="mit6.s081 lab5 补档"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/28173130/pexels-photo-28173130.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="mit6.s081 lab5 补档"/></a><div class="content"><a class="title" href="/2024/09/06/mit6-s081-lab5-%E8%A1%A5%E6%A1%A3/" title="mit6.s081 lab5 补档">mit6.s081 lab5 补档</a><time datetime="2024-09-06T02:01:55.000Z" title="Created 2024-09-06 10:01:55">2024-09-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/03/%E5%88%A9%E7%94%A8vscode-%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E9%98%BF%E9%87%8C%E4%BA%91-ecs%E6%9C%8D%E5%8A%A1%E5%99%A8-%E7%94%A8gdb-%E8%B0%83%E8%AF%95/" title="利用vscode 远程连接阿里云 ecs服务器 用gdb 调试"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/15282063/pexels-photo-15282063.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用vscode 远程连接阿里云 ecs服务器 用gdb 调试"/></a><div class="content"><a class="title" href="/2024/09/03/%E5%88%A9%E7%94%A8vscode-%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E9%98%BF%E9%87%8C%E4%BA%91-ecs%E6%9C%8D%E5%8A%A1%E5%99%A8-%E7%94%A8gdb-%E8%B0%83%E8%AF%95/" title="利用vscode 远程连接阿里云 ecs服务器 用gdb 调试">利用vscode 远程连接阿里云 ecs服务器 用gdb 调试</a><time datetime="2024-09-03T13:07:51.000Z" title="Created 2024-09-03 21:07:51">2024-09-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/07/%E5%8A%A8%E6%89%8B%E5%AD%A6%E4%B9%A0%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A8%E7%BA%AA%E5%BD%95/" title="动手学习深度学习全纪录"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://images.pexels.com/photos/26572408/pexels-photo-26572408.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1260&amp;h=750&amp;dpr=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="动手学习深度学习全纪录"/></a><div class="content"><a class="title" href="/2024/07/07/%E5%8A%A8%E6%89%8B%E5%AD%A6%E4%B9%A0%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A8%E7%BA%AA%E5%BD%95/" title="动手学习深度学习全纪录">动手学习深度学习全纪录</a><time datetime="2024-07-07T07:30:08.000Z" title="Created 2024-07-07 15:30:08">2024-07-07</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://images.pexels.com/photos/4456985/pexels-photo-4456985.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By missay</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="Chat"><i class="fas fa-sms"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="8797166454" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="66" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script>(function(d, w, c) {
+    w.ChatraID = 'gnasWsj5zqeNieHZk';
+    var s = d.createElement('script');
+    w[c] = w[c] || function() {
+        (w[c].q = w[c].q || []).push(arguments);
+    };
+    s.async = true;
+    s.src = 'https://call.chatra.io/chatra.js';
+    if (d.head) d.head.appendChild(s);
+})(document, window, 'Chatra');
+
+if (true) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      Chatra('openChat')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      Chatra('hide')
+    }
+    function chatBtnShow () {
+      Chatra('show')
+    }
+  }
+}</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"right","width":150,"height":300,"hOffset":25},"mobile":{"show":false},"log":false});</script></body></html>
