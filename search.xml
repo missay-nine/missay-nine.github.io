@@ -4,6 +4,38 @@
   
     
     <entry>
+      <title>rnn学习记录</title>
+      <link href="/2025/04/06/rnn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+      <url>/2025/04/06/rnn%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>经典赛——乘用车销量分析</title>
+      <link href="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/"/>
+      <url>/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/</url>
+      
+        <content type="html"><![CDATA[<h3 id="ccf-bdci-乘务车——销量"><a href="#ccf-bdci-乘务车——销量" class="headerlink" title="ccf bdci 乘务车——销量"></a>ccf bdci 乘务车——销量</h3><p>近期完成了第一个数据相关的竞赛，特此记录一下。</p><p>[赛题网址](<a href="https://www.datafountain.cn/competitions/352">https://www.datafountain.cn/competitions/352</a></p><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222125633319.png" alt="image-20241222125633319"></p><p>首先对于数据分析类的问题，想起之前打数学建模比赛，跟c题有异曲同工的意思。都是大量的数据操作。</p><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222125758254.png" alt="image-20241222125758254"></p><p>这是大赛的数据集。</p><p>对于数据操作的基本步骤如下</p><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222125841049.png" alt="image-20241222125841049"></p><h4 id="数据收集"><a href="#数据收集" class="headerlink" title="数据收集"></a>数据收集</h4><p>这里主办方给了数据集，我们直接进行数据预处理，</p><h4 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h4><p>经过excel简单的处理，我们发现，数据并没有缺失，所以无须担心为空白的情况。另外，我们发现model字段 一堆字符串，可以将它离散成为1,2,3 之类的代码，然后观测到，数据的最大值和最小值偏离很大，我们可以采用对数化处理</p><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222130048072.png" alt="image-20241222130048072"></p><p>y = ln y  + 1 ；     反对数化 y =  e^(y-1)</p><p>这样方便处理，以及让数据呈现成正态分布。</p><p>数据预处理完成后进行特征工程</p><h4 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h4><p>特征工程，根据网上所查阅的资料是这样的：</p><p>特征工程是这样一个过程：将数据转换为能更好地表示潜在问题的特征，从而提高机器学习性能。特征工程就是一个把原始数据转变成特征的过程，这些特征可以很好的描述这些数据，并且利用它们建立的模型在未知数据上的表现性能可以达到最优（或者接近最佳性能）。</p><p>在数据集原来带有的特征情况下， 我们可以进行简单的加减，对比操作，来得到新的特征。</p><p>小结：特征构建比较麻烦，需要一定的经验，需要结合具体的业务，花费大量的时间去观察原始数据，思考问题的潜在形式和数据结构，以及如何将特征数据输入给预测算法。</p><p>比如在这个赛题中，我们明显可以看到，销售量伴随着时间而变化。说明销量跟季节性是相关的，我们可以简历时间序列模型，此外每个月的环比，同比也可以作为销量。然后赛题还提供了互联网搜索量，我们可以根据这些来提取有用的特征，比如说某辆车的评论，是不是代表着最近互联网讨论的人很多，然后提高该车的知名度，从而提升销售。</p><p>参考了几个大佬的做法，采用决策树模型，和时间序列模型，运用模型融合的方法，设置权重，从而提升数据的准确性。</p><h4 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h4><p>‌LightGBM（LGB）模型是一种基于梯度提升决策树（GBDT）的机器学习模型，它通过优化传统的GBDT算法，提高了训练速度、降低了内存消耗，并且能够更好地处理大规模数据集‌。‌ </p><p>参考链接 <a href="https://blog.csdn.net/kuxingseng123/article/details/128768421"> lgb</a></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> 原生模式</span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line">gbm = lgb.train(params, lgb_train, num_boost_round=<span class="number">20</span>, valid_sets=lgb_eval, early_stopping_rounds=<span class="number">5</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型保存</span></span><br><span class="line">gbm.save_model(<span class="string">&#x27;model.txt&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型加载</span></span><br><span class="line">gbm = lgb.Booster(model_file=<span class="string">&#x27;model.txt&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型预测</span></span><br><span class="line">y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)</span><br><span class="line"> </span><br><span class="line"><span class="number">2</span> sklearn接口模式</span><br><span class="line"><span class="keyword">from</span> lightgbm <span class="keyword">import</span> LGBMRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.externals <span class="keyword">import</span> joblib</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line">gbm = LGBMRegressor(objective=<span class="string">&#x27;regression&#x27;</span>, num_leaves=<span class="number">31</span>, learning_rate=<span class="number">0.05</span>, n_estimators=<span class="number">20</span>)</span><br><span class="line">gbm.fit(X_train, y_train, eval_set=[(X_test, y_test)], eval_metric=<span class="string">&#x27;l1&#x27;</span>, early_stopping_rounds=<span class="number">5</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型存储</span></span><br><span class="line">joblib.dump(gbm, <span class="string">&#x27;loan_model.pkl&#x27;</span>)</span><br><span class="line"><span class="comment"># 模型加载</span></span><br><span class="line">gbm = joblib.load(<span class="string">&#x27;loan_model.pkl&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 模型预测</span></span><br><span class="line">y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration_)</span><br></pre></td></tr></table></figure><p>主要机器学习 就是特征工程，调参的过程。需要不断的尝试。</p><h4 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h4><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222133215489.png" alt="image-20241222133215489"></p><p>我们从控制台上看到 正在训练模型。 等待几分钟训练差不多了。我们得到结果 然后去官网上交。</p><p><img src="/2024/12/22/%E7%BB%8F%E5%85%B8%E8%B5%9B%E2%80%94%E2%80%94%E4%B9%98%E7%94%A8%E8%BD%A6%E9%94%80%E9%87%8F%E5%88%86%E6%9E%90/image-20241222133328745.png" alt="image-20241222133328745"></p><p>到此全部结束。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> ai分析 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>打卡程序</title>
       <link href="/2024/09/18/%E6%89%93%E5%8D%A1%E7%A8%8B%E5%BA%8F/"/>
       <url>/2024/09/18/%E6%89%93%E5%8D%A1%E7%A8%8B%E5%BA%8F/</url>
@@ -363,25 +395,6 @@
           <category> 学习生活 </category>
           
       </categories>
-      
-      
-        <tags>
-            
-            <tag> 日常随笔 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>2023年10月13日20:22:07日记</title>
-      <link href="/2023/10/13/2023%E5%B9%B410%E6%9C%8813%E6%97%A520-22-07%E6%97%A5%E8%AE%B0/"/>
-      <url>/2023/10/13/2023%E5%B9%B410%E6%9C%8813%E6%97%A520-22-07%E6%97%A5%E8%AE%B0/</url>
-      
-        <content type="html"><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>好久没有写博客了 ，之前提到 不能拖延 ，但是 感觉还是拖延了不少! 现在开始 尽量每天一篇吧。</p><p><img src="/2023/10/13/2023%E5%B9%B410%E6%9C%8813%E6%97%A520-22-07%E6%97%A5%E8%AE%B0/56DZ%5D6M(1S_WBK%60Y5)@1M4N.jpg" alt="img"></p><h4 id="今天内容"><a href="#今天内容" class="headerlink" title="今天内容"></a>今天内容</h4><p>看了mysql  ，计算机网络，  早上写了下算法。感觉长路漫漫，不知道今后的路应该如何走。牛客也只会越刷越焦虑，害，距离毕业也只有一年了。</p><hr>]]></content>
-      
       
       
         <tags>
